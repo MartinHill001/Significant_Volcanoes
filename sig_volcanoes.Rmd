@@ -1,0 +1,89 @@
+---
+title: "Significant Volcanoes in Japan"
+author: "Martin Hill"
+date: "19 March 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+```
+
+## Souce Material
+
+Data provided care of the National Geophysical Data Center, NOAA.
+
+https://www.ngdc.noaa.gov/nndc/servlet/ShowDatasets?dataset=102557&search_look=50&display_look=50
+
+Their database globally lists over 500 significant eruptions which includes information on the latitude, longitude, elevation, type of volcano, and last known eruption.
+
+## Criteria
+A significant eruption meets one of the folowing crieria:  
+
+- Caused fatalities
+- Caused moderate damage (approximately $1 million or more)
+- With a Volcanic Explosivity Index (VEI) of 6 or larger
+- Caused a tsunami
+- Was associated with a major earthquake
+
+For a complete list of current and past activity for all volcanoes on the planet active during the last 10,000 years, please see Smithsonian Institution's Global Volcanism Program (GVP). 
+
+
+```{r loaddata, cache=TRUE}
+download.file(destfile = "volerup.txt",
+      url = "https://www.ngdc.noaa.gov/nndc/struts/results?type_0=Exact&query_0=$HAZ_EVENT_ID&t=102557&s=50&d=54&dfn=volerup.txt")
+
+df<-read.delim2(file="volerup.txt", stringsAsFactors = FALSE)
+df<-df[df$Country == "Japan",]
+#set col to VEI, where NA to be -1 and make as index
+df$VEIsize<-df$VEI
+df["VEIsize"][is.na(df["VEIsize"])] <- -1
+df$VEIsize<-df$VEIsize+2
+class(df$Latitude)<-"numeric"
+class(df$Longitude)<-"numeric"
+    
+```
+
+## Significant Eruptions in Japan
+
+Size = Volcanic Explosivity Index
+
+```{r Map}
+library(leaflet)
+
+YearCol <- function(Year) {
+      if(Year < -4000) "grey"
+      else if(Year < -3000) "violet"
+      else if(Year < -2000) "indigo"
+      else if(Year < -1000) "blue"
+      else if(Year < 0) "green" #1st millenium BC
+      else if(Year < 1000) "yellow" #1st millenium AD
+      else if(Year < 2000) "orange"
+      else if(Year < 3000) "red"
+      else "black"
+}
+
+df$Yearcolour <- sapply(df$Year, function(x) YearCol(x))
+
+Yearcolour <- sapply(c(-5000,-4000,-3000,-2000,-1000,0,1000,2000), function(x) YearCol(x))
+YearLabel <-c("5000 BC- 4001 BC","4000 BC- 3001 BC","3000 BC- 2001 BC","2000 BC- 1001 BC","1000 BC- 1 BC", "1 AD- 1000 AD", "1001 AD- 2000 AD","2001 AD- 3000 AD")
+
+map<-data.frame(lat = df$Latitude,
+                lng = df$Longitude,
+                col = sapply(df$Year, function(x) YearCol(x)),
+                size = df$VEIsize*2,
+                stringsAsFactors = TRUE
+                )
+content <- paste(sep = "<br/>",
+  df$Name,
+  paste(sep = "", "Year : ", as.character(df$Year)),
+  paste(sep = "", "Elevation : ", as.character(df$Elevation)),
+  paste(sep = "", "Agent : ", df$Agent)
+)
+
+map%>%leaflet()%>%
+      addTiles()%>%
+      addCircleMarkers(color = map$col, radius = map$size, popup = content)%>%
+      addLegend(labels = YearLabel, colors = Yearcolour)
+```
+
