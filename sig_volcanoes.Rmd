@@ -1,5 +1,5 @@
 ---
-title: "Significant Volcanoes in Japan"
+title: "Significant Volcanoes"
 author: "Martin Hill"
 date: "19 March 2017"
 output: ioslides_presentation
@@ -34,7 +34,7 @@ download.file(destfile = "volerup.txt",
       url = "https://www.ngdc.noaa.gov/nndc/struts/results?type_0=Exact&query_0=$HAZ_EVENT_ID&t=102557&s=50&d=54&dfn=volerup.txt")
 
 df<-read.delim2(file="volerup.txt", stringsAsFactors = FALSE)
-df<-df[df$Country == "Japan",]
+#df<-df[df$Country == "Japan",]
 #set col to VEI, where NA to be -1 and make as index
 df$VEIsize<-df$VEI
 df["VEIsize"][is.na(df["VEIsize"])] <- -1
@@ -44,7 +44,7 @@ class(df$Longitude)<-"numeric"
     
 ```
 
-## Significant Eruptions in Japan
+## Significant Eruptions
 
 Size = Volcanic Explosivity Index
 
