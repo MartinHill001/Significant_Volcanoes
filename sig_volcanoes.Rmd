@@ -41,16 +41,13 @@ df["VEIsize"][is.na(df["VEIsize"])] <- -1
 df$VEIsize<-df$VEIsize+2
 class(df$Latitude)<-"numeric"
 class(df$Longitude)<-"numeric"
-    
 ```
 
 ## Significant Eruptions
 
 Size = Volcanic Explosivity Index
 
-```{r Map}
-library(leaflet)
-
+```{r Map, eval=FALSE}
 YearCol <- function(Year) {
       if(Year < -4000) "grey"
       else if(Year < -3000) "violet"
@@ -87,3 +84,8 @@ map%>%leaflet()%>%
       addLegend(labels = YearLabel, colors = Yearcolour)
 ```
 
+
+```{r plotly, echo=TRUE}
+library(plotly)
+plot_ly(df, x = ~Longitude, y = ~Latitude, mode = "markers", color = ~Elevation, size = ~VEIsize)
+```
