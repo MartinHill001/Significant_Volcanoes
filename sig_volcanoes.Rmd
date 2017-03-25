@@ -44,9 +44,6 @@ class(df$Longitude)<-"numeric"
 ```
 
 ## Significant Eruptions
-
-Size = Volcanic Explosivity Index
-
 ```{r Map, eval=FALSE}
 YearCol <- function(Year) {
       if(Year < -4000) "grey"
