@@ -1,7 +1,7 @@
 ---
 title: "Significant Volcanoes"
 author: "Martin Hill"
-date: "19 March 2017"
+date: "01 April 2017"
 output: ioslides_presentation
 ---
 
@@ -44,7 +44,9 @@ class(df$Longitude)<-"numeric"
 ```
 
 ## Significant Eruptions
-```{r Map, eval=FALSE}
+Here the size indicates the VEI. The Agents are assigned letters (A,E,F,G,I,L,M,P,S,T,W).
+```{r Map, echo=FALSE, eval=TRUE }
+library(leaflet)
 YearCol <- function(Year) {
       if(Year < -4000) "grey"
       else if(Year < -3000) "violet"
@@ -82,7 +84,24 @@ map%>%leaflet()%>%
 ```
 
 
-```{r plotly, echo=TRUE}
+```{r plotly, echo=FALSE, eval=FALSE}
 library(plotly)
 plot_ly(df, x = ~Longitude, y = ~Latitude, mode = "markers", color = ~Elevation, size = ~VEIsize)
 ```
+
+##Interactive Map
+This link provides a map which can be filtered by a Country, a range of Years and some Agents (or All).
+Simply make your selection and press Submit. 
+
+[Interactive Map](https://martinhill001.shinyapps.io/Significant_Volcanoes/)
+
+Assigning: E = Earthquake, P = Pyroclastic Flow, T = Tsunami  
+
+
+### Example 1, Italy, [Vesuvius](http://www.protezionecivile.gov.it/jcms/en/eruzione_vesuvio_1631.wp)
+Year: 1631, Agents P,E,M
+
+### Example 2, United States, [St. Helens](http://volcano.oregonstate.edu/mt-st-helens)
+Year: 1980, Agents P,M,T
+
+
